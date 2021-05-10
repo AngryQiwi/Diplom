@@ -7,27 +7,28 @@ import javax.persistence.*;
 public class Tags {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tag_id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private Self_employeed self_employeed;
+    private Integer tag_id;
+
+    @Column
+    private Integer self_employeed_id;
+
     @Column
     private String tag_name;
 
-    public int getTag_id() {
+    public Integer getTag_id() {
         return tag_id;
     }
 
-    public void setTag_id(int tag_id) {
+    public void setTag_id(Integer tag_id) {
         this.tag_id = tag_id;
     }
 
-    public Self_employeed getSelf_employeed() {
-        return self_employeed;
+    public Integer getSelf_employeed_id() {
+        return self_employeed_id;
     }
 
-    public void setSelf_employeed(Self_employeed self_employeed) {
-        this.self_employeed = self_employeed;
+    public void setSelf_employeed_id(Integer self_employeed_id) {
+        this.self_employeed_id = self_employeed_id;
     }
 
     public String getTag_name() {
@@ -38,9 +39,21 @@ public class Tags {
         this.tag_name = tag_name;
     }
 
-    public Tags(int tag_id, Self_employeed self_employeed, String tag_name) {
+    public Tags(int tag_id, Integer self_employeed_id, String tag_name) {
         this.tag_id = tag_id;
-        this.self_employeed = self_employeed;
+        this.self_employeed_id = self_employeed_id;
         this.tag_name = tag_name;
+    }
+
+    public Tags() {
+    }
+
+    @Override
+    public String toString() {
+        return "Tags{" +
+                "tag_id=" + tag_id +
+                ", self_employeed=" + self_employeed_id +
+                ", tag_name='" + tag_name + '\'' +
+                '}';
     }
 }

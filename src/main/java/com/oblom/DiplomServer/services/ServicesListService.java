@@ -1,68 +1,49 @@
 package com.oblom.DiplomServer.services;
 
-import javax.persistence.*;
+import com.oblom.DiplomServer.entities.Services_list;
+import com.oblom.DiplomServer.repositories.ServicesListRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "Services_list")
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
 public class ServicesListService {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int service_id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private SelfEmployeedService self_employeed;
-    @Column
-    private String service_name;
-    @Column
-    private String service_description;
-    @Column
-    private double price;
+    @Autowired
+    private final ServicesListRepository servicesListRepository;
 
-    public int getService_id() {
-        return service_id;
+    public ServicesListService(ServicesListRepository servicesListRepository) {
+        this.servicesListRepository = servicesListRepository;
+    }
+    public List<Services_list> readAll() {
+        return servicesListRepository.findAll();
+    }
+    public Services_list read(int id){
+        return servicesListRepository.getOne(id);
     }
 
-    public void setService_id(int service_id) {
-        this.service_id = service_id;
+    public void create(Services_list services_list) {
+        servicesListRepository.save(services_list);
     }
 
-    public SelfEmployeedService getSelf_employeed() {
-        return self_employeed;
+    public boolean delete(int id) {
+        if(servicesListRepository.existsById(id)) {
+            servicesListRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
-
-    public void setSelf_employeed(SelfEmployeedService self_employeed) {
-        this.self_employeed = self_employeed;
+    public boolean update(int id, Services_list services_list){
+        if(servicesListRepository.existsById(id)) {
+            services_list.setService_id(id);
+            servicesListRepository.save(services_list);
+            return true;
+        }
+        return false;
     }
-
-    public String getService_name() {
-        return service_name;
-    }
-
-    public void setService_name(String service_name) {
-        this.service_name = service_name;
-    }
-
-    public String getService_description() {
-        return service_description;
-    }
-
-    public void setService_description(String service_description) {
-        this.service_description = service_description;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public ServicesListService(int service_id, SelfEmployeedService self_employeed, String service_name, String service_description, double price) {
-        this.service_id = service_id;
-        this.self_employeed = self_employeed;
-        this.service_name = service_name;
-        this.service_description = service_description;
-        this.price = price;
+    public List<Services_list> readAllBySelfEmployeedId(int id) {
+        return servicesListRepository.findAllBySelfEmployeedId(id);
     }
 }

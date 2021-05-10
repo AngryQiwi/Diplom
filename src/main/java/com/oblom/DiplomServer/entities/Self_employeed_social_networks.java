@@ -7,38 +7,39 @@ import javax.persistence.*;
 public class Self_employeed_social_networks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int self_employeed_social_network_id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private Self_employeed self_employeed;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "social_network_id")
-    private Social_networks social_networks;
+    private Integer self_employeed_social_network_id;
+
+    @Column
+    private Integer self_employeed_id;
+
+    @Column
+    private Integer social_networks_id;
+
     @Column
     private String social_network_url;
 
-    public int getSelf_employeed_social_network_id() {
+    public Integer getSelf_employeed_social_network_id() {
         return self_employeed_social_network_id;
     }
 
-    public void setSelf_employeed_social_network_id(int self_employeed_social_network_id) {
+    public void setSelf_employeed_social_network_id(Integer self_employeed_social_network_id) {
         this.self_employeed_social_network_id = self_employeed_social_network_id;
     }
 
-    public Self_employeed getSelf_employeed() {
-        return self_employeed;
+    public Integer getSelf_employeed_id() {
+        return self_employeed_id;
     }
 
-    public void setSelf_employeed(Self_employeed self_employeed) {
-        this.self_employeed = self_employeed;
+    public void setSelf_employeed_id(Integer self_employeed_id) {
+        this.self_employeed_id = self_employeed_id;
     }
 
-    public Social_networks getSocial_networks() {
-        return social_networks;
+    public Integer getSocial_networks_id() {
+        return social_networks_id;
     }
 
-    public void setSocial_networks(Social_networks social_networks) {
-        this.social_networks = social_networks;
+    public void setSocial_networks_id(Integer social_networks_id) {
+        this.social_networks_id = social_networks_id;
     }
 
     public String getSocial_network_url() {
@@ -49,10 +50,23 @@ public class Self_employeed_social_networks {
         this.social_network_url = social_network_url;
     }
 
-    public Self_employeed_social_networks(int self_employeed_social_network_id, Self_employeed self_employeed, Social_networks social_networks, String social_network_url) {
+    public Self_employeed_social_networks(int self_employeed_social_network_id, Integer self_employeed_id, Integer social_networks_id, String social_network_url) {
         this.self_employeed_social_network_id = self_employeed_social_network_id;
-        this.self_employeed = self_employeed;
-        this.social_networks = social_networks;
+        this.self_employeed_id = self_employeed_id;
+        this.social_networks_id = social_networks_id;
         this.social_network_url = social_network_url;
+    }
+
+    public Self_employeed_social_networks() {
+    }
+
+    @Override
+    public String toString() {
+        return "Self_employeed_social_networks{" +
+                "self_employeed_social_network_id=" + self_employeed_social_network_id +
+                ", self_employeed=" + self_employeed_id +
+                ", social_networks=" + social_networks_id +
+                ", social_network_url='" + social_network_url + '\'' +
+                '}';
     }
 }

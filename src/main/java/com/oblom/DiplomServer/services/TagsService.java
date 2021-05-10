@@ -1,46 +1,49 @@
 package com.oblom.DiplomServer.services;
 
-import javax.persistence.*;
+import com.oblom.DiplomServer.entities.Tags;
+import com.oblom.DiplomServer.repositories.TagsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "Tags")
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
 public class TagsService {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tag_id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private SelfEmployeedService self_employeed;
-    @Column
-    private String tag_name;
+    @Autowired
+    private final TagsRepository tagsRepository;
 
-    public int getTag_id() {
-        return tag_id;
+    public TagsService(TagsRepository tagsRepository) {
+        this.tagsRepository = tagsRepository;
+    }
+    public List<Tags> readAll() {
+        return tagsRepository.findAll();
+    }
+    public Tags read(int id){
+        return tagsRepository.getOne(id);
     }
 
-    public void setTag_id(int tag_id) {
-        this.tag_id = tag_id;
+    public void create(Tags tags) {
+        tagsRepository.save(tags);
     }
 
-    public SelfEmployeedService getSelf_employeed() {
-        return self_employeed;
+    public boolean delete(int id) {
+        if(tagsRepository.existsById(id)) {
+            tagsRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
-
-    public void setSelf_employeed(SelfEmployeedService self_employeed) {
-        this.self_employeed = self_employeed;
+    public boolean update(int id, Tags tags){
+        if(tagsRepository.existsById(id)) {
+            tags.setTag_id(id);
+            tagsRepository.save(tags);
+            return true;
+        }
+        return false;
     }
-
-    public String getTag_name() {
-        return tag_name;
-    }
-
-    public void setTag_name(String tag_name) {
-        this.tag_name = tag_name;
-    }
-
-    public TagsService(int tag_id, SelfEmployeedService self_employeed, String tag_name) {
-        this.tag_id = tag_id;
-        this.self_employeed = self_employeed;
-        this.tag_name = tag_name;
+    public List<Tags> readAllBySelfEmployeedId(int id) {
+        return tagsRepository.findAllBySelfEmployeedId(id);
     }
 }

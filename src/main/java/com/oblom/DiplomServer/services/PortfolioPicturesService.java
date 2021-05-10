@@ -1,48 +1,50 @@
 package com.oblom.DiplomServer.services;
 
-import javax.persistence.*;
+import com.oblom.DiplomServer.entities.Portfolio_pictures;
+import com.oblom.DiplomServer.repositories.PortfolioPicturesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "Portfolio_pictures")
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
 public class PortfolioPicturesService {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int picture_id;
+    @Autowired
+    private final PortfolioPicturesRepository portfolioPicturesRepository;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private SelfEmployeedService self_employeed;
-
-    @Column
-    private String picture;
-
-    public int getPicture_id() {
-        return picture_id;
+    public PortfolioPicturesService(PortfolioPicturesRepository portfolioPicturesRepository) {
+        this.portfolioPicturesRepository = portfolioPicturesRepository;
+    }
+    public List<Portfolio_pictures> readAll() {
+        return portfolioPicturesRepository.findAll();
+    }
+    public Portfolio_pictures read(int id){
+        return portfolioPicturesRepository.getOne(id);
     }
 
-    public void setPicture_id(int picture_id) {
-        this.picture_id = picture_id;
+    public void create(Portfolio_pictures portfolio_pictures) {
+        portfolioPicturesRepository.save(portfolio_pictures);
     }
 
-    public SelfEmployeedService getSelf_employeed() {
-        return self_employeed;
+    public boolean delete(int id) {
+        if(portfolioPicturesRepository.existsById(id)) {
+            portfolioPicturesRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+    public boolean update(int id, Portfolio_pictures portfolio_pictures){
+        if(portfolioPicturesRepository.existsById(id)) {
+            portfolio_pictures.setPicture_id(id);
+            portfolioPicturesRepository.save(portfolio_pictures);
+            return true;
+        }
+        return false;
+    }
+    public List<Portfolio_pictures> readAllBySelfEmployeedId(int id) {
+        return portfolioPicturesRepository.findAllBySelfEmployeedId(id);
     }
 
-    public void setSelf_employeed(SelfEmployeedService self_employeed) {
-        this.self_employeed = self_employeed;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public PortfolioPicturesService(int picture_id, SelfEmployeedService self_employeed, String picture) {
-        this.picture_id = picture_id;
-        this.self_employeed = self_employeed;
-        this.picture = picture;
-    }
 }

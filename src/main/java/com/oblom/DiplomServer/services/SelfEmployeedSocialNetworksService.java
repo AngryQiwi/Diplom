@@ -1,58 +1,49 @@
 package com.oblom.DiplomServer.services;
 
-import javax.persistence.*;
+import com.oblom.DiplomServer.entities.Self_employeed_social_networks;
+import com.oblom.DiplomServer.repositories.SelfEmployeedSocialNetworksRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "Self_employeed_social_networks")
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
 public class SelfEmployeedSocialNetworksService {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int self_employeed_social_network_id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private SelfEmployeedService self_employeed;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "social_network_id")
-    private SocialNetworksService social_networks;
-    @Column
-    private String social_network_url;
+    @Autowired
+    private final SelfEmployeedSocialNetworksRepository selfEmployeedSocialNetworksRepository;
 
-    public int getSelf_employeed_social_network_id() {
-        return self_employeed_social_network_id;
+    public SelfEmployeedSocialNetworksService(SelfEmployeedSocialNetworksRepository selfEmployeedSocialNetworksRepository) {
+        this.selfEmployeedSocialNetworksRepository = selfEmployeedSocialNetworksRepository;
+    }
+    public List<Self_employeed_social_networks> readAll() {
+        return selfEmployeedSocialNetworksRepository.findAll();
+    }
+    public Self_employeed_social_networks read(int id){
+        return selfEmployeedSocialNetworksRepository.getOne(id);
     }
 
-    public void setSelf_employeed_social_network_id(int self_employeed_social_network_id) {
-        this.self_employeed_social_network_id = self_employeed_social_network_id;
+    public void create(Self_employeed_social_networks self_employeed_social_networks) {
+        selfEmployeedSocialNetworksRepository.save(self_employeed_social_networks);
     }
 
-    public SelfEmployeedService getSelf_employeed() {
-        return self_employeed;
+    public boolean delete(int id) {
+        if(selfEmployeedSocialNetworksRepository.existsById(id)) {
+            selfEmployeedSocialNetworksRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
-
-    public void setSelf_employeed(SelfEmployeedService self_employeed) {
-        this.self_employeed = self_employeed;
+    public boolean update(int id, Self_employeed_social_networks self_employeed_social_networks){
+        if(selfEmployeedSocialNetworksRepository.existsById(id)) {
+            self_employeed_social_networks.setSelf_employeed_social_network_id(id);
+            selfEmployeedSocialNetworksRepository.save(self_employeed_social_networks);
+            return true;
+        }
+        return false;
     }
-
-    public SocialNetworksService getSocial_networks() {
-        return social_networks;
-    }
-
-    public void setSocial_networks(SocialNetworksService social_networks) {
-        this.social_networks = social_networks;
-    }
-
-    public String getSocial_network_url() {
-        return social_network_url;
-    }
-
-    public void setSocial_network_url(String social_network_url) {
-        this.social_network_url = social_network_url;
-    }
-
-    public SelfEmployeedSocialNetworksService(int self_employeed_social_network_id, SelfEmployeedService self_employeed, SocialNetworksService social_networks, String social_network_url) {
-        this.self_employeed_social_network_id = self_employeed_social_network_id;
-        this.self_employeed = self_employeed;
-        this.social_networks = social_networks;
-        this.social_network_url = social_network_url;
+    public List<Self_employeed_social_networks> readAllBySelfEmployeedId(int id) {
+        return selfEmployeedSocialNetworksRepository.findAllBySelfEmployeedId(id);
     }
 }

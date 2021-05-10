@@ -1,34 +1,46 @@
 package com.oblom.DiplomServer.services;
 
-import javax.persistence.*;
+import com.oblom.DiplomServer.entities.Social_networks;
+import com.oblom.DiplomServer.repositories.SocialNetworksRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "Social_networks")
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
 public class SocialNetworksService {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int social_network_id;
-    @Column
-    private String social_network_name;
+    @Autowired
+    private final SocialNetworksRepository socialNetworksRepository;
 
-    public int getSocial_network_id() {
-        return social_network_id;
+    public SocialNetworksService(SocialNetworksRepository socialNetworksRepository) {
+        this.socialNetworksRepository = socialNetworksRepository;
+    }
+    public List<Social_networks> readAll() {
+        return socialNetworksRepository.findAll();
+    }
+    public Social_networks read(int id){
+        return socialNetworksRepository.getOne(id);
     }
 
-    public void setSocial_network_id(int social_network_id) {
-        this.social_network_id = social_network_id;
+    public void create(Social_networks social_networks) {
+        socialNetworksRepository.save(social_networks);
     }
 
-    public String getSocial_network_name() {
-        return social_network_name;
+    public boolean delete(int id) {
+        if(socialNetworksRepository.existsById(id)) {
+            socialNetworksRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
-
-    public void setSocial_network_name(String social_network_name) {
-        this.social_network_name = social_network_name;
-    }
-
-    public SocialNetworksService(int social_network_id, String social_network_name) {
-        this.social_network_id = social_network_id;
-        this.social_network_name = social_network_name;
+    public boolean update(int id, Social_networks social_networks){
+        if(socialNetworksRepository.existsById(id)) {
+            social_networks.setSocial_network_id(id);
+            socialNetworksRepository.save(social_networks);
+            return true;
+        }
+        return false;
     }
 }

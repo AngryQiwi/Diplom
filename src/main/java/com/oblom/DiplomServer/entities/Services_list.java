@@ -1,38 +1,39 @@
 package com.oblom.DiplomServer.entities;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "Services_list")
 public class Services_list {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int service_id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private Self_employeed self_employeed;
+    private Integer service_id;
+    @Column
+    private Integer self_employeed_id;
     @Column
     private String service_name;
     @Column
     private String service_description;
     @Column
-    private double price;
+    private Float price;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "service_id")
+    private Set<Payment_description> payment_descriptions;
 
-    public int getService_id() {
+    public Integer getService_id() {
         return service_id;
     }
 
-    public void setService_id(int service_id) {
+    public void setService_id(Integer service_id) {
         this.service_id = service_id;
     }
 
-    public Self_employeed getSelf_employeed() {
-        return self_employeed;
+    public Integer getSelf_employeed_id() {
+        return self_employeed_id;
     }
 
-    public void setSelf_employeed(Self_employeed self_employeed) {
-        this.self_employeed = self_employeed;
+    public void setSelf_employeed_id(Integer self_employeed_id) {
+        this.self_employeed_id = self_employeed_id;
     }
 
     public String getService_name() {
@@ -51,19 +52,34 @@ public class Services_list {
         this.service_description = service_description;
     }
 
-    public double getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 
-    public Services_list(int service_id, Self_employeed self_employeed, String service_name, String service_description, double price) {
+    public Services_list(int service_id, Integer self_employeed_id, String service_name, String service_description, Float price, Set<Payment_description> payment_descriptions) {
         this.service_id = service_id;
-        this.self_employeed = self_employeed;
+        this.self_employeed_id = self_employeed_id;
         this.service_name = service_name;
         this.service_description = service_description;
         this.price = price;
+        this.payment_descriptions = payment_descriptions;
+    }
+
+    public Services_list() {
+    }
+
+    @Override
+    public String toString() {
+        return "Services_list{" +
+                "service_id=" + service_id +
+                ", self_employeed=" + self_employeed_id +
+                ", service_name='" + service_name + '\'' +
+                ", service_description='" + service_description + '\'' +
+                ", price=" + price +
+                '}';
     }
 }

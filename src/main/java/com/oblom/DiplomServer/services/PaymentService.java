@@ -1,74 +1,52 @@
 package com.oblom.DiplomServer.services;
 
-import javax.persistence.*;
-import java.util.Date;
+import com.oblom.DiplomServer.entities.Payment;
+import com.oblom.DiplomServer.repositories.PaymentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "Payment")
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
 public class PaymentService {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int payment_id;
+    @Autowired
+    private final PaymentRepository paymentRepository;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "self_employeed_id")
-    private SelfEmployeedService self_employeed;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "customer_id")
-    private CustomerService customer;
-
-    @Column
-    private double money;
-
-    @Column
-    private Date birthdate;
-
-    public int getPayment_id() {
-        return payment_id;
+    public PaymentService(PaymentRepository paymentRepository) {
+        this.paymentRepository = paymentRepository;
+    }
+    public List<Payment> readAll() {
+        return paymentRepository.findAll();
+    }
+    public Payment read(int id){
+        return paymentRepository.getOne(id);
     }
 
-    public void setPayment_id(int payment_id) {
-        this.payment_id = payment_id;
+    public void create(Payment payment) {
+        paymentRepository.save(payment);
     }
 
-    public SelfEmployeedService getSelf_employeed() {
-        return self_employeed;
+    public boolean delete(int id) {
+        if(paymentRepository.existsById(id)) {
+            paymentRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
-
-    public void setSelf_employeed(SelfEmployeedService self_employeed) {
-        this.self_employeed = self_employeed;
+    public boolean update(int id, Payment payment){
+        if(paymentRepository.existsById(id)) {
+            payment.setPayment_id(id);
+            paymentRepository.save(payment);
+            return true;
+        }
+        return false;
     }
-
-    public CustomerService getCustomer() {
-        return customer;
+    public List<Payment> readAllBySelfEmployeedId(int id) {
+        return paymentRepository.findAllBySelfEmployeedId(id);
     }
-
-    public void setCustomer(CustomerService customer) {
-        this.customer = customer;
-    }
-
-    public double getMoney() {
-        return money;
-    }
-
-    public void setMoney(double money) {
-        this.money = money;
-    }
-
-    public Date getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
-    }
-
-    public PaymentService(int payment_id, SelfEmployeedService self_employeed, CustomerService customer, double money, Date birthdate) {
-        this.payment_id = payment_id;
-        this.self_employeed = self_employeed;
-        this.customer = customer;
-        this.money = money;
-        this.birthdate = birthdate;
+    public List<Payment> readAllByCustomerId(int id) {
+        return paymentRepository.findAllByCustomerId(id);
     }
 }

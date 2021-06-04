@@ -1,5 +1,7 @@
 package com.oblom.DiplomServer.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Date;
@@ -25,26 +27,54 @@ public class Self_employeed {
     private Long card_number;
     @Column
     private Long phone;
-    @Column
-    private Integer category_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id", nullable = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Categories categories;
     @Column
     private String brief;
     @Column
     private Double rating;
     @Column
-    private Byte[] photo;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed_id")
+    private String photo;
+    @Column
+    private String password;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Role role;
+    @Column
+    private String email;
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed")
     private Set<Tags> tags;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed")
     private Set<Services_list> services;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed")
     private Set<Self_employeed_social_networks> self_employeed_social_networks;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed")
     private Set<Payment> payments;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed")
     private Set<Portfolio_pictures> portfolio_pictures;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "self_employeed")
     private Set<Favorites> favorites;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Integer getSelf_employeed_id() {
         return self_employeed_id;
@@ -110,13 +140,6 @@ public class Self_employeed {
         this.phone = phone;
     }
 
-    public Integer getCategory_id() {
-        return category_id;
-    }
-
-    public void setCategory_id(Integer category_id) {
-        this.category_id = category_id;
-    }
 
     public String getBrief() {
         return brief;
@@ -134,15 +157,31 @@ public class Self_employeed {
         this.rating = rating;
     }
 
-    public Byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
-    public Self_employeed(int self_employeed_id, String l_name, String f_name, String m_name, Date birthdate, Long itn, long card_number, long phone, Integer category_id, String brief, double rating, Byte[] photo, Set<Tags> tags, Set<Services_list> services, Set<Self_employeed_social_networks> self_employeed_social_networks, Set<Payment> payments, Set<Portfolio_pictures> portfolio_pictures, Set<Favorites> favorites) {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Categories getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Categories categories) {
+        this.categories = categories;
+    }
+
+    public Self_employeed(Integer self_employeed_id, String l_name, String f_name, String m_name, Date birthdate, Long itn, Long card_number, Long phone, Categories categories, String brief, Double rating, String photo, String password, Role role, String email, Set<Tags> tags, Set<Services_list> services, Set<Self_employeed_social_networks> self_employeed_social_networks, Set<Payment> payments, Set<Portfolio_pictures> portfolio_pictures, Set<Favorites> favorites) {
         this.self_employeed_id = self_employeed_id;
         this.l_name = l_name;
         this.f_name = f_name;
@@ -151,10 +190,13 @@ public class Self_employeed {
         this.itn = itn;
         this.card_number = card_number;
         this.phone = phone;
-        this.category_id = category_id;
+        this.categories = categories;
         this.brief = brief;
         this.rating = rating;
         this.photo = photo;
+        this.password = password;
+        this.role = role;
+        this.email = email;
         this.tags = tags;
         this.services = services;
         this.self_employeed_social_networks = self_employeed_social_networks;
@@ -177,10 +219,11 @@ public class Self_employeed {
                 ", itn=" + itn +
                 ", card_number=" + card_number +
                 ", phone=" + phone +
-                ", category=" + category_id +
                 ", brief='" + brief + '\'' +
                 ", rating=" + rating +
-                ", photo='" + Arrays.toString(photo) + '\'' +
+                ", photo='" + photo + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

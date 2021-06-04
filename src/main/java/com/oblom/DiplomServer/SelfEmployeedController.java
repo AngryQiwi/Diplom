@@ -1,9 +1,11 @@
 package com.oblom.DiplomServer;
 
 import com.oblom.DiplomServer.entities.*;
+import com.oblom.DiplomServer.jwt.JwtProvider;
+import com.oblom.DiplomServer.jwt.JwtRequest;
+import com.oblom.DiplomServer.jwt.JwtResponse;
 import com.oblom.DiplomServer.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ public class SelfEmployeedController {
     private final PaymentDescriptionService paymentDescriptionService;
     private final PaymentService paymentService;
     private final PortfolioPicturesService portfolioPicturesService;
+    private final RoleService roleService;
     private final SelfEmployeedService selfEmployeedService;
     private final SelfEmployeedSocialNetworksService selfEmployeedSocialNetworksService;
     private final ServicesListService servicesListService;
@@ -25,18 +28,53 @@ public class SelfEmployeedController {
     private final TagsService tagsService;
 
     @Autowired
-    public SelfEmployeedController(CategoriesService categoriesService, CustomerService customerService, FavoritesService favoritesService, PaymentDescriptionService paymentDescriptionService, PaymentService paymentService, PortfolioPicturesService portfolioPicturesService, SelfEmployeedService selfEmployeedService, SelfEmployeedSocialNetworksService selfEmployeedSocialNetworksService, ServicesListService servicesListService, SocialNetworksService socialNetworksService, TagsService tagsService) {
+    public SelfEmployeedController(CategoriesService categoriesService, CustomerService customerService, FavoritesService favoritesService, PaymentDescriptionService paymentDescriptionService, PaymentService paymentService, PortfolioPicturesService portfolioPicturesService, RoleService roleService, SelfEmployeedService selfEmployeedService, SelfEmployeedSocialNetworksService selfEmployeedSocialNetworksService, ServicesListService servicesListService, SocialNetworksService socialNetworksService, TagsService tagsService) {
         this.categoriesService = categoriesService;
         this.customerService = customerService;
         this.favoritesService = favoritesService;
         this.paymentDescriptionService = paymentDescriptionService;
         this.paymentService = paymentService;
         this.portfolioPicturesService = portfolioPicturesService;
+        this.roleService = roleService;
         this.selfEmployeedService = selfEmployeedService;
         this.selfEmployeedSocialNetworksService = selfEmployeedSocialNetworksService;
         this.servicesListService = servicesListService;
         this.socialNetworksService = socialNetworksService;
         this.tagsService = tagsService;
+    }
+    @Autowired
+    private JwtProvider jwtProvider;
+    @PostMapping("/customers/register")
+    public String registerCustomer(@RequestBody JwtRequest registrationRequest) {
+        Customer customer = new Customer();
+        customer.setPassword(registrationRequest.getPassword());
+        customer.setEmail(registrationRequest.getUsername());
+        customer.setRole(roleService.read(2));
+        customerService.create(customer);
+        return "OK";
+    }
+
+    @PostMapping("/customers/auth")
+    public JwtResponse authCustomer(@RequestBody JwtRequest request) {
+        Customer customer = customerService.findByEmailAndPassword(request.getUsername(), request.getPassword());
+        String token = jwtProvider.generateToken(customer.getEmail());
+        return new JwtResponse(token);
+    }
+    @PostMapping("/selfemployeeds/register")
+    public String registerSelfEmployeed(@RequestBody JwtRequest registrationRequest) {
+        Self_employeed self_employeed = new Self_employeed();
+        self_employeed.setPassword(registrationRequest.getPassword());
+        self_employeed.setEmail(registrationRequest.getUsername());
+        self_employeed.setRole(roleService.read(3));
+        selfEmployeedService.create(self_employeed);
+        return "OK";
+    }
+
+    @PostMapping("/selfemployeeds/auth")
+    public JwtResponse authSelfEmployeed(@RequestBody JwtRequest request) {
+        Self_employeed self_employeed = selfEmployeedService.findByEmailAndPassword(request.getUsername(), request.getPassword());
+        String token = jwtProvider.generateToken(self_employeed.getEmail());
+        return new JwtResponse(token);
     }
 
     @GetMapping(value = "/selfemployeeds")

@@ -12,7 +12,7 @@ public class Categories {
 
     @Column
     private String category_name;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categories")
     private Set<Self_employeed> self_employeeds;
 
     public Integer getCategory_id() {

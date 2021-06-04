@@ -21,7 +21,7 @@ public class FavoritesService {
         return favoritesRepository.findAll();
     }
     public Favorites read(int id){
-        return favoritesRepository.getOne(id);
+        return favoritesRepository.findById(id).get();
     }
 
     public void create(Favorites favorites) {

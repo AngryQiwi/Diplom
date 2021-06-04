@@ -21,7 +21,7 @@ public class ServicesListService {
         return servicesListRepository.findAll();
     }
     public Services_list read(int id){
-        return servicesListRepository.getOne(id);
+        return servicesListRepository.findById(id).get();
     }
 
     public void create(Services_list services_list) {

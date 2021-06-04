@@ -1,5 +1,7 @@
 package com.oblom.DiplomServer.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,11 +26,25 @@ public class Customer {
     @Column
     private Long phone;
     @Column
-    private Byte[] photo;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer_id")
+    private String photo;
+    @Column
+    private String password;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Role role;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     private Set<Payment> payments;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     private Set<Favorites> favorites;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Integer getCustomer_id() {
         return customer_id;
@@ -86,15 +102,23 @@ public class Customer {
         this.phone = phone;
     }
 
-    public Byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
-    public Customer(int customer_id, String l_name, String f_name, String m_name, Date birthdate, String email, long phone, Byte[] photo, Set<Payment> payments, Set<Favorites> favorites) {
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Customer(Integer customer_id, String l_name, String f_name, String m_name, Date birthdate, String email, Long phone, String photo, String password, Role role, Set<Payment> payments, Set<Favorites> favorites) {
         this.customer_id = customer_id;
         this.l_name = l_name;
         this.f_name = f_name;
@@ -103,6 +127,8 @@ public class Customer {
         this.email = email;
         this.phone = phone;
         this.photo = photo;
+        this.password = password;
+        this.role = role;
         this.payments = payments;
         this.favorites = favorites;
     }
@@ -120,7 +146,8 @@ public class Customer {
                 ", birthdate=" + birthdate +
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
-                ", photo='" + Arrays.toString(photo) + '\'' +
+                ", photo='" + photo + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

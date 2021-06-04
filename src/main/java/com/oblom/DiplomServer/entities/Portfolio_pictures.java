@@ -1,5 +1,7 @@
 package com.oblom.DiplomServer.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Arrays;
 
@@ -10,11 +12,13 @@ public class Portfolio_pictures {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer picture_id;
 
-    @Column
-    private Integer self_employeed_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "self_employeed_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Self_employeed self_employeed;
 
     @Column
-    private Byte[] picture;
+    private String picture;
 
     public Integer getPicture_id() {
         return picture_id;
@@ -24,25 +28,25 @@ public class Portfolio_pictures {
         this.picture_id = picture_id;
     }
 
-    public Integer getSelf_employeed_id() {
-        return self_employeed_id;
+    public Self_employeed getSelf_employeed() {
+        return self_employeed;
     }
 
-    public void setSelf_employeed_id(Integer self_employeed_id) {
-        this.self_employeed_id = self_employeed_id;
+    public void setSelf_employeed(Self_employeed self_employeed) {
+        this.self_employeed = self_employeed;
     }
 
-    public Byte[] getPicture() {
+    public String getPicture() {
         return picture;
     }
 
-    public void setPicture(Byte[] picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 
-    public Portfolio_pictures(int picture_id, Integer self_employeed_id, Byte[] picture) {
+    public Portfolio_pictures(int picture_id, Self_employeed self_employeed, String picture) {
         this.picture_id = picture_id;
-        this.self_employeed_id = self_employeed_id;
+        this.self_employeed = self_employeed;
         this.picture = picture;
     }
 
@@ -53,8 +57,7 @@ public class Portfolio_pictures {
     public String toString() {
         return "Portfolio_pictures{" +
                 "picture_id=" + picture_id +
-                ", self_employeed=" + self_employeed_id +
-                ", picture='" + Arrays.toString(picture) + '\'' +
+                ", picture='" + picture + '\'' +
                 '}';
     }
 }

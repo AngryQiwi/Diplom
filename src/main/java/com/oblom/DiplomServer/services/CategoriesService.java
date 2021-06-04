@@ -22,7 +22,7 @@ public class CategoriesService {
         return categoriesRepository.findAll();
     }
     public Categories read(int id){
-        return categoriesRepository.getOne(id);
+        return categoriesRepository.findById(id).get();
     }
 
     public void create(Categories category) {

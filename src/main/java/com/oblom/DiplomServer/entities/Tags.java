@@ -1,5 +1,7 @@
 package com.oblom.DiplomServer.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,8 +11,10 @@ public class Tags {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer tag_id;
 
-    @Column
-    private Integer self_employeed_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "self_employeed_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Self_employeed self_employeed;
 
     @Column
     private String tag_name;
@@ -23,12 +27,12 @@ public class Tags {
         this.tag_id = tag_id;
     }
 
-    public Integer getSelf_employeed_id() {
-        return self_employeed_id;
+    public Self_employeed getSelf_employeed() {
+        return self_employeed;
     }
 
-    public void setSelf_employeed_id(Integer self_employeed_id) {
-        this.self_employeed_id = self_employeed_id;
+    public void setSelf_employeed(Self_employeed self_employeed) {
+        this.self_employeed = self_employeed;
     }
 
     public String getTag_name() {
@@ -39,9 +43,9 @@ public class Tags {
         this.tag_name = tag_name;
     }
 
-    public Tags(int tag_id, Integer self_employeed_id, String tag_name) {
+    public Tags(int tag_id, Self_employeed self_employeed, String tag_name) {
         this.tag_id = tag_id;
-        this.self_employeed_id = self_employeed_id;
+        this.self_employeed = self_employeed;
         this.tag_name = tag_name;
     }
 
@@ -52,7 +56,6 @@ public class Tags {
     public String toString() {
         return "Tags{" +
                 "tag_id=" + tag_id +
-                ", self_employeed=" + self_employeed_id +
                 ", tag_name='" + tag_name + '\'' +
                 '}';
     }

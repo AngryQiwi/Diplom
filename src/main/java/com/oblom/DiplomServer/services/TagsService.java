@@ -21,7 +21,7 @@ public class TagsService {
         return tagsRepository.findAll();
     }
     public Tags read(int id){
-        return tagsRepository.getOne(id);
+        return tagsRepository.findById(id).get();
     }
 
     public void create(Tags tags) {

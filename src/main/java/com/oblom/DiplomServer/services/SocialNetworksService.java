@@ -21,7 +21,7 @@ public class SocialNetworksService {
         return socialNetworksRepository.findAll();
     }
     public Social_networks read(int id){
-        return socialNetworksRepository.getOne(id);
+        return socialNetworksRepository.findById(id).get();
     }
 
     public void create(Social_networks social_networks) {

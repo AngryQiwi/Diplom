@@ -1,5 +1,7 @@
 package com.oblom.DiplomServer.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,11 +11,15 @@ public class Favorites {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer favorite_id;
 
-    @Column
-    private Integer customer_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Customer customer;
 
-    @Column
-    private Integer self_employeed_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "self_employeed_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Self_employeed self_employeed;
 
     public Integer getFavorite_id() {
         return favorite_id;
@@ -23,26 +29,26 @@ public class Favorites {
         this.favorite_id = favorite_id;
     }
 
-    public Integer getCustomer_id() {
-        return customer_id;
+    public Self_employeed getSelf_employeed() {
+        return self_employeed;
     }
 
-    public void setCustomer_id(Integer customer_id) {
-        this.customer_id = customer_id;
+    public void setSelf_employeed(Self_employeed self_employeed) {
+        this.self_employeed = self_employeed;
     }
 
-    public Integer getSelf_employeed_id() {
-        return self_employeed_id;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setSelf_employeed_id(Integer self_employeed_id) {
-        this.self_employeed_id = self_employeed_id;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public Favorites(int favorite_id, Integer customer_id, Integer self_employeed_id) {
+    public Favorites(int favorite_id, Customer customer, Self_employeed self_employeed) {
         this.favorite_id = favorite_id;
-        this.customer_id = customer_id;
-        this.self_employeed_id = self_employeed_id;
+        this.customer = customer;
+        this.self_employeed = self_employeed;
     }
 
     public Favorites() {
@@ -52,8 +58,6 @@ public class Favorites {
     public String toString() {
         return "Favorites{" +
                 "favorite_id=" + favorite_id +
-                ", customer=" + customer_id +
-                ", self_employeed=" + self_employeed_id +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package com.oblom.DiplomServer.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,11 +11,15 @@ public class Payment_description {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer payment_description_id;
 
-    @Column
-    private Integer payment_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Payment payment;
 
-    @Column
-    private Integer service_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "service_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Services_list services_list;
 
     public Integer getPayment_description_id() {
         return payment_description_id;
@@ -23,26 +29,26 @@ public class Payment_description {
         this.payment_description_id = payment_description_id;
     }
 
-    public Integer getPayment_id() {
-        return payment_id;
+    public Payment getPayment() {
+        return payment;
     }
 
-    public void setPayment_id(Integer payment_id) {
-        this.payment_id = payment_id;
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
-    public Integer getService_id() {
-        return service_id;
+    public Services_list getServices_list() {
+        return services_list;
     }
 
-    public void setService_id(Integer service_id) {
-        this.service_id = service_id;
+    public void setServices_list(Services_list services_list) {
+        this.services_list = services_list;
     }
 
-    public Payment_description(int payment_description_id, Integer payment_id, Integer service_id) {
+    public Payment_description(int payment_description_id, Payment payment, Services_list services_list) {
         this.payment_description_id = payment_description_id;
-        this.payment_id = payment_id;
-        this.service_id = service_id;
+        this.payment = payment;
+        this.services_list = services_list;
     }
 
     public Payment_description() {
@@ -52,8 +58,6 @@ public class Payment_description {
     public String toString() {
         return "Payment_description{" +
                 "payment_description_id=" + payment_description_id +
-                ", payment=" + payment_id +
-                ", services_list=" + service_id +
                 '}';
     }
 }

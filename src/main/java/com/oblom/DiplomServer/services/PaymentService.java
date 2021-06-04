@@ -21,7 +21,7 @@ public class PaymentService {
         return paymentRepository.findAll();
     }
     public Payment read(int id){
-        return paymentRepository.getOne(id);
+        return paymentRepository.findById(id).get();
     }
 
     public void create(Payment payment) {

@@ -11,7 +11,7 @@ public class Social_networks {
     private Integer social_network_id;
     @Column
     private String social_network_name;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "social_networks_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "social_networks")
     private Set<Self_employeed_social_networks> self_employeed_social_networks;
 
     public Integer getSocial_network_id() {

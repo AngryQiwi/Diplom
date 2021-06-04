@@ -21,7 +21,7 @@ public class SelfEmployeedSocialNetworksService {
         return selfEmployeedSocialNetworksRepository.findAll();
     }
     public Self_employeed_social_networks read(int id){
-        return selfEmployeedSocialNetworksRepository.getOne(id);
+        return selfEmployeedSocialNetworksRepository.findById(id).get();
     }
 
     public void create(Self_employeed_social_networks self_employeed_social_networks) {

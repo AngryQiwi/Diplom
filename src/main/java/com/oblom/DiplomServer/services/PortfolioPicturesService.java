@@ -21,7 +21,7 @@ public class PortfolioPicturesService {
         return portfolioPicturesRepository.findAll();
     }
     public Portfolio_pictures read(int id){
-        return portfolioPicturesRepository.getOne(id);
+        return portfolioPicturesRepository.findById(id).get();
     }
 
     public void create(Portfolio_pictures portfolio_pictures) {

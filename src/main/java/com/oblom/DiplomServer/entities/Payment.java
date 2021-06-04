@@ -1,5 +1,7 @@
 package com.oblom.DiplomServer.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -11,18 +13,22 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer payment_id;
 
-    @Column
-    private Integer self_employeed_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "self_employeed_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Self_employeed self_employeed;
 
-    @Column
-    private Integer customer_id;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Customer customer;
 
     @Column
     private Double amount;
 
     @Column
     private Date date;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "payment_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "payment")
     private Set<Payment_description> payment_descriptions;
 
 
@@ -34,20 +40,20 @@ public class Payment {
         this.payment_id = payment_id;
     }
 
-    public Integer getSelf_employeed_id() {
-        return self_employeed_id;
+    public Self_employeed getSelf_employeed() {
+        return self_employeed;
     }
 
-    public void setSelf_employeed_id(Integer self_employeed_id) {
-        this.self_employeed_id = self_employeed_id;
+    public void setSelf_employeed(Self_employeed self_employeed) {
+        this.self_employeed = self_employeed;
     }
 
-    public Integer getCustomer_id() {
-        return customer_id;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomer_id(Integer customer_id) {
-        this.customer_id = customer_id;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Double getAmount() {
@@ -66,10 +72,10 @@ public class Payment {
         this.date = birthdate;
     }
 
-    public Payment(int payment_id, Integer self_employeed_id, Integer customer_id, double amount, Date date, Set<Payment_description> payment_descriptions) {
+    public Payment(int payment_id, Self_employeed self_employeed, Customer customer, double amount, Date date, Set<Payment_description> payment_descriptions) {
         this.payment_id = payment_id;
-        this.self_employeed_id = self_employeed_id;
-        this.customer_id = customer_id;
+        this.self_employeed = self_employeed;
+        this.customer = customer;
         this.amount = amount;
         this.date = date;
         this.payment_descriptions = payment_descriptions;
@@ -82,8 +88,6 @@ public class Payment {
     public String toString() {
         return "Payment{" +
                 "payment_id=" + payment_id +
-                ", self_employeed=" + self_employeed_id +
-                ", customer=" + customer_id +
                 ", amount=" + amount +
                 ", date=" + date +
                 '}';

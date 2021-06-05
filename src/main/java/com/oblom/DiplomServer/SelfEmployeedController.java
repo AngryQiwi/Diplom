@@ -5,12 +5,21 @@ import com.oblom.DiplomServer.jwt.JwtProvider;
 import com.oblom.DiplomServer.jwt.JwtRequest;
 import com.oblom.DiplomServer.jwt.JwtResponse;
 import com.oblom.DiplomServer.services.*;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class SelfEmployeedController {
@@ -26,7 +35,12 @@ public class SelfEmployeedController {
     private final ServicesListService servicesListService;
     private final SocialNetworksService socialNetworksService;
     private final TagsService tagsService;
-
+    @Value("${upload.avatar.selfemployeed.path}")
+    private String uploadAvatarSelfEmployeedPath;
+    @Value("${upload.avatar.customer.path}")
+    private String uploadAvatarCustomerPath;
+    @Value("${upload.portfolio.path}")
+    private String uploadPortfolioPath;
     @Autowired
     public SelfEmployeedController(CategoriesService categoriesService, CustomerService customerService, FavoritesService favoritesService, PaymentDescriptionService paymentDescriptionService, PaymentService paymentService, PortfolioPicturesService portfolioPicturesService, RoleService roleService, SelfEmployeedService selfEmployeedService, SelfEmployeedSocialNetworksService selfEmployeedSocialNetworksService, ServicesListService servicesListService, SocialNetworksService socialNetworksService, TagsService tagsService) {
         this.categoriesService = categoriesService;
@@ -75,6 +89,48 @@ public class SelfEmployeedController {
         Self_employeed self_employeed = selfEmployeedService.findByEmailAndPassword(request.getUsername(), request.getPassword());
         String token = jwtProvider.generateToken(self_employeed.getEmail());
         return new JwtResponse(token);
+    }
+
+
+
+    @PostMapping("/selfemployeeds/avatar/{id}")
+    public String uploadAvatarSelfEmployeed(@PathVariable(name = "id") int id,@RequestParam("file") MultipartFile file) throws IOException {
+        Self_employeed self_employeed = selfEmployeedService.read(id);
+        self_employeed.setPhoto(uploadAvatarSelfEmployeedPath + "/" + id + ".jpeg");
+        selfEmployeedService.update(id, self_employeed);
+        file.transferTo(new File(uploadAvatarSelfEmployeedPath + id + ".jpeg"));
+        return "OK";
+    }
+    @PostMapping("/customers/avatar/{id}")
+    public String uploadAvatarCustomer(@PathVariable(name = "id") int id,@RequestParam("file") MultipartFile file) throws IOException {
+        Customer customer = customerService.read(id);
+        customer.setPhoto(uploadAvatarCustomerPath + "/" + id + ".jpeg");
+        customerService.update(id, customer);
+        file.transferTo(new File(uploadAvatarCustomerPath + id + ".jpeg"));
+        return "OK";
+    }
+    @GetMapping(value = "/selfemployeeds/avatar/{id}")
+    public ResponseEntity<byte[]> getSelfEmployeedAvatar(@PathVariable(name = "id") int id) throws IOException {
+
+        var imgFile = new ClassPathResource(uploadAvatarSelfEmployeedPath + id + ".jpeg");
+        byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(bytes);
+    }
+
+    @GetMapping(value = "/customers/avatar/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getCustomerAvatar(@PathVariable(name = "id") int id) throws IOException {
+
+        var imgFile = new ClassPathResource(uploadAvatarCustomerPath + id + ".jpeg");
+        byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(bytes);
     }
 
     @GetMapping(value = "/selfemployeeds")

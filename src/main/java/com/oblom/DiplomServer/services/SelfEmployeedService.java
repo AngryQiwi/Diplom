@@ -30,9 +30,11 @@ public class SelfEmployeedService {
         return selfEmployeedRepository.findById(id).get();
     }
 
-    public void create(Self_employeed self_employeed) {
+    public boolean create(Self_employeed self_employeed) {
+        if(findByEmail(self_employeed.getEmail()) != null) return false;
         self_employeed.setPassword(passwordEncoder.encode(self_employeed.getPassword()));
         selfEmployeedRepository.save(self_employeed);
+        return true;
     }
 
     public boolean delete(int id) {

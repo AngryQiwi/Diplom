@@ -32,10 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/selfemployeeds/auth").permitAll()
                 .antMatchers( "/customers/register").permitAll()
                 .antMatchers("/customers/auth").permitAll()
+                .antMatchers("/selfemployeeds").permitAll()
+                .antMatchers(HttpMethod.GET, "/selfemployeeds/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/customers/**").permitAll()
                 .antMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
                 .antMatchers("/selfemployeeds/**").hasAnyRole("SELFEMPLOYEED", "ADMIN")
-                .antMatchers(HttpMethod.GET, "/selfemployeeds/**").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET, "/customers/**").hasRole("SELFEMPLOYEED")
                 .antMatchers("/**").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

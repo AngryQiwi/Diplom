@@ -1,1 +1,1 @@
-web: java src/main/java/com/oblom/DiplomServer/DiplomServerApplication.java
+web: java target/DiplomServer-0.0.1-SNAPSHOT.jar

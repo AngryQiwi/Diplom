@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* com.oblom.DiplomServer
+web: java -war target/DiplomServer-0.0.1-SNAPSHOT.war

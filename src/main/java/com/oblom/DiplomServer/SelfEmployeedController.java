@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -105,22 +107,27 @@ public class SelfEmployeedController {
 
     @PostMapping("/selfemployeeds/avatar/{id}")
     @CrossOrigin(origins = "http://localhost:3000")
-
     public String uploadAvatarSelfEmployeed(@PathVariable(name = "id") int id,@RequestParam("file") MultipartFile file) throws IOException {
         Self_employeed self_employeed = selfEmployeedService.read(id);
-        self_employeed.setPhoto(uploadAvatarSelfEmployeedPath + "/" + id + ".jpeg");
+        self_employeed.setPhoto(uploadAvatarSelfEmployeedPath + id + ".jpeg");
         selfEmployeedService.update(id, self_employeed);
-        file.transferTo(new File(uploadAvatarSelfEmployeedPath + id + ".jpeg"));
+        InputStream inputStream = file.getInputStream();
+        Path filePath = Paths.get(uploadAvatarSelfEmployeedPath + id + ".jpeg");
+        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        inputStream.close();
         return "OK";
     }
     @PostMapping("/customers/avatar/{id}")
     @CrossOrigin(origins = "http://localhost:3000")
-
-    public String uploadAvatarCustomer(@PathVariable(name = "id") int id,@RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadAvatarCustomer(@PathVariable(name = "id") int id,@RequestParam("file") MultipartFile file) throws IOException, FileSystemException {
         Customer customer = customerService.read(id);
-        customer.setPhoto(uploadAvatarCustomerPath + "/" + id + ".jpeg");
+        customer.setPhoto(uploadAvatarCustomerPath + id + ".jpeg");
         customerService.update(id, customer);
-        file.transferTo(new File(uploadAvatarCustomerPath + id + ".jpeg"));
+
+        InputStream inputStream = file.getInputStream();
+        Path filePath = Paths.get(uploadAvatarCustomerPath + id + ".jpeg");
+        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        inputStream.close();
         return "OK";
     }
     @GetMapping(value = "/selfemployeeds/avatar/{id}")
@@ -128,9 +135,9 @@ public class SelfEmployeedController {
 
     public ResponseEntity<byte[]> getSelfEmployeedAvatar(@PathVariable(name = "id") int id) throws IOException {
 
-        var imgFile = new ClassPathResource(uploadAvatarSelfEmployeedPath + id + ".jpeg");
+        var imgFile = new ClassPathResource("/avatarsselfemployeed/" + id + ".jpeg");
         byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
-
+        imgFile.getInputStream().close();
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.IMAGE_JPEG)
@@ -142,9 +149,9 @@ public class SelfEmployeedController {
 
     public ResponseEntity<byte[]> getCustomerAvatar(@PathVariable(name = "id") int id) throws IOException {
 
-        var imgFile = new ClassPathResource(uploadAvatarCustomerPath + id + ".jpeg");
+        var imgFile = new ClassPathResource("/avatarscustomer/" + id + ".jpeg");
         byte[] bytes = StreamUtils.copyToByteArray(imgFile.getInputStream());
-
+        imgFile.getInputStream().close();
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.IMAGE_JPEG)

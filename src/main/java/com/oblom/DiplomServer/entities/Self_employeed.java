@@ -205,6 +205,20 @@ public class Self_employeed {
         this.favorites = favorites;
     }
 
+    public Self_employeed(String l_name, String f_name, String m_name, Date birthdate, Long itn, Long card_number, Long phone, Categories categories, String brief, Double rating, String email) {
+        this.l_name = l_name;
+        this.f_name = f_name;
+        this.m_name = m_name;
+        this.birthdate = birthdate;
+        this.itn = itn;
+        this.card_number = card_number;
+        this.phone = phone;
+        this.categories = categories;
+        this.brief = brief;
+        this.rating = rating;
+        this.email = email;
+    }
+
     public Self_employeed() {
     }
 

@@ -12,10 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter  implements WebMvcConfigurer {
 
     @Autowired
     private JwtFilter jwtFilter;
@@ -25,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .httpBasic().disable()
                 .csrf().disable()
+                .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -35,13 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/selfemployeeds").permitAll()
                 .antMatchers(HttpMethod.GET, "/selfemployeeds/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/customers/**").permitAll()
-                .antMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
-                .antMatchers("/selfemployeeds/**").hasAnyRole("SELFEMPLOYEED", "ADMIN")
                 .antMatchers("/**").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("*");
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -1,1 +1,1 @@
-web: java target/classes/com/oblom/DiplomServer/DiplomServerApplication.class
+web: javax target/classes/com/oblom/DiplomServer/DiplomServerApplication.class

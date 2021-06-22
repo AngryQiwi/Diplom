@@ -1,1 +1,1 @@
-web: -Xmx300m -Xss512k -XX:CICompilerCount=2 -Dfile.encoding=UTF-8 java target/DiplomServer-0.0.1-SNAPSHOT.war
+web: java target/DiplomServer-0.0.1-SNAPSHOT.war

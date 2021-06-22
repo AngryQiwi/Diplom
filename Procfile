@@ -1,1 +1,1 @@
-web: java target/DiplomServer-0.0.1-SNAPSHOT.war
+web: java target/classes/com/oblom/DiplomServer/DiplomServerApplication.class
